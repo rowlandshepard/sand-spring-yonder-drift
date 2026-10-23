@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", "Iowan Old Style", Palatino, "Palatino Linotype", serif;
+  --font-sans: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
+
+  --color-paper: #f3efe4;
+  --color-paper-deep: #e6dfd0;
+  --color-card: #fffdf8;
+  --color-ink: #1c1915;
+  --color-muted: #5c564e;
+  --color-line: #ddd4c4;
+  --color-rule: #e4dccb;
+  --color-pine: #1f5c4d;
+  --color-pine-deep: #17483c;
+  --color-pine-soft: #e5f2ec;
+  --color-clay: #8e3018;
+  --color-clay-deep: #732515;
+  --color-clay-soft: #f8e8e2;
+  --color-brass: #6e5220;
+  --color-brass-soft: #f3ead4;
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  ::selection {
+    background: var(--color-pine-soft);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-pine);
+    outline-offset: 2px;
+  }
+}
+
+.deck-card {
+  box-shadow:
+    0 1px 0 var(--color-line),
+    0 18px 40px rgb(28 25 21 / 0.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

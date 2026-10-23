@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Respire Cards · BIOL 1414 Lecture 9</title>
+    <meta
+      name="description"
+      content="Flashcards for BIOL 1414 Lecture 9, cellular respiration. Check each answer, then tag cards you know so the next shuffle leaves them out."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,640&family=Outfit:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --paper: #f3efe4;
+        --paper-deep: #e6dfd0;
+        --card: #fffdf8;
+        --ink: #1c1915;
+        --muted: #5c564e;
+        --line: #ddd4c4;
+        --rule: #e4dccb;
+        --pine: #1f5c4d;
+        --pine-soft: #e5f2ec;
+        --clay: #8e3018;
+        --clay-soft: #f8e8e2;
+        --brass: #6e5220;
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-font-smoothing: antialiased; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        font-family: Outfit, "Avenir Next", "Segoe UI", sans-serif;
+        background-color: var(--paper);
+      }
+      button { font: inherit; cursor: pointer; }
+      button:disabled { cursor: default; }
+      :focus-visible { outline: 2px solid var(--pine); outline-offset: 2px; }
+      main { max-width: 48rem; margin: 0 auto; padding: 2rem 1rem 3rem; }
+      .kicker { letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); font-size: 0.75rem; font-weight: 600; margin: 0; }
+      h1 { font-family: Fraunces, Palatino, serif; font-size: clamp(2.4rem, 6vw, 3.4rem); line-height: 1.05; margin: 0.2rem 0 0; font-weight: 560; }
+      .lede { color: var(--muted); max-width: 38rem; }
+      .stats, .card, .done { background: var(--card); border: 1px solid var(--line); border-radius: 1rem; }
+      .stats { padding: 0.8rem 1rem; margin: 1.2rem 0; }
+      .bar { display: flex; height: 0.4rem; background: var(--paper-deep); border-radius: 999px; overflow: hidden; }
+      .bar i { display: block; height: 100%; }
+      .meta { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; color: var(--muted); font-variant-numeric: tabular-nums; font-size: 0.92rem; }
+      .row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
+      .chip, .ghost, .solid, .tag, .choice { min-height: 2.75rem; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); }
+      .chip, .ghost, .solid { padding: 0.4rem 0.9rem; }
+      .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+      .seg button[aria-pressed="true"] { background: var(--pine); color: var(--paper); }
+      .seg { display: flex; gap: 0.15rem; padding: 0.2rem; border: 1px solid var(--line); border-radius: 999px; background: var(--card); }
+      .seg button { border: 0; background: transparent; min-height: 2.35rem; border-radius: 999px; padding: 0 0.8rem; }
+      .card { position: relative; overflow: hidden; box-shadow: 0 18px 40px rgb(28 25 21 / 0.06); }
+      .card .pad, .done { padding: 1.4rem 1.2rem 1.2rem 1.4rem; }
+      .spine { position: absolute; inset: 0 auto 0 0; width: 0.4rem; background: var(--pine); }
+      .topic { display: flex; justify-content: space-between; gap: 1rem; color: var(--brass); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; }
+      .topic span:last-child { color: var(--muted); letter-spacing: 0; text-transform: none; font-size: 0.9rem; }
+      h2 { font-family: Fraunces, Palatino, serif; font-size: clamp(1.6rem, 4vw, 2rem); line-height: 1.2; font-weight: 560; margin: 0.8rem 0 0; text-wrap: balance; }
+      .choices { display: grid; gap: 0.55rem; margin-top: 1.2rem; }
+      .choice { display: flex; gap: 0.7rem; text-align: left; align-items: flex-start; border-radius: 0.8rem; padding: 0.75rem 0.8rem; width: 100%; }
+      .choice b { color: var(--brass); font-weight: 600; width: 1.2rem; flex: none; }
+      .choice.right { background: var(--pine-soft); border-color: var(--pine); }
+      .choice.wrong { background: var(--clay-soft); border-color: var(--clay); }
+      .choice.dim { color: var(--muted); }
+      label { display: block; margin-top: 1.1rem; color: var(--muted); font-size: 0.92rem; }
+      input { width: 100%; min-height: 2.75rem; margin-top: 0.35rem; border-radius: 0.8rem; border: 1px solid var(--line); background: var(--paper); padding: 0 0.8rem; font: inherit; color: var(--ink); }
+      .warn { color: var(--clay); font-weight: 600; }
+      .banner { margin-top: 1rem; border-radius: 0.8rem; padding: 0.9rem 1rem; color: var(--paper); }
+      .banner.ok { background: var(--pine); }
+      .banner.no { background: var(--clay); }
+      .banner strong { font-family: Fraunces, Palatino, serif; font-size: 1.6rem; display: block; }
+      .banner p { margin: 0.35rem 0 0; }
+      .tags { display: grid; gap: 0.5rem; margin-top: 0.8rem; }
+      @media (min-width: 640px) { .tags { grid-template-columns: 1fr 1fr; } .card .pad, .done { padding: 1.8rem 2rem; } }
+      .tag { border-radius: 0.8rem; font-weight: 650; }
+      .tag.on-pine { background: var(--pine); color: var(--paper); border-color: var(--pine); }
+      .tag.on-clay { background: var(--clay); color: var(--paper); border-color: var(--clay); }
+      .actions { display: flex; justify-content: flex-end; margin-top: 0.9rem; }
+      .solid { background: var(--pine); color: var(--paper); border-color: var(--pine); font-weight: 650; }
+      .solid.ink { background: var(--ink); border-color: var(--ink); }
+      .foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.6rem; margin-top: 1rem; color: var(--muted); font-size: 0.92rem; align-items: center; }
+      .linkish { background: none; border: 0; color: var(--ink); text-decoration: underline; text-underline-offset: 0.25rem; min-height: 2.75rem; }
+      .mark { width: 3rem; height: 3rem; flex: none; margin-top: 0.15rem; }
+      .head { display: flex; gap: 0.9rem; align-items: flex-start; }
+      .topic-pick { display: none; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+      .topic-pick span { color: var(--muted); font-size: 0.92rem; font-weight: 600; }
+      .topic-pick select { flex: 1; min-height: 2.75rem; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: inherit; padding: 0 0.8rem; }
+      @media (max-width: 639px) {
+        #topics { display: none; }
+        .topic-pick { display: flex; }
+        main { padding-top: 1.25rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header class="head">
+        <svg class="mark" viewBox="0 0 48 48" aria-hidden="true">
+          <rect x="1" y="1" width="46" height="46" rx="12" fill="#1f5c4d" />
+          <ellipse cx="24" cy="24" rx="14" ry="9" fill="none" stroke="#f3efe4" stroke-width="1.8" />
+          <path d="M12.5 24.4c2.8-3.2 4.8-3.2 7 0s4.2 3.2 7 0 4.2-3.2 7.8 0" fill="none" stroke="#f3efe4" stroke-width="1.6" stroke-linecap="round" />
+        </svg>
+        <div>
+          <p class="kicker">BIOL 1414 · Lecture 9 · 7–8 Oct 2026</p>
+          <h1>Respire Cards</h1>
+          <p class="lede">Cellular respiration, from the lecture. Answer the card, then tag it. Known cards stay out of the next shuffle.</p>
+        </div>
+      </header>
+      <section class="stats" aria-live="polite">
+        <div class="bar" aria-hidden="true"><i id="bar-known"></i><i id="bar-work"></i></div>
+        <p class="meta" id="stats"></p>
+      </section>
+      <label class="topic-pick">
+        <span>Topic</span>
+        <select id="topic-select" aria-label="Topic"></select>
+      </label>
+      <div class="row" id="topics"></div>
+      <div class="row">
+        <div class="seg" role="group" aria-label="Deck">
+          <button type="button" id="view-remaining">Remaining</button>
+          <button type="button" id="view-work">Needs work</button>
+        </div>
+        <div class="seg" role="group" aria-label="Answer by">
+          <button type="button" id="mode-choice">Choices</button>
+          <button type="button" id="mode-recall">Typing</button>
+        </div>
+        <button type="button" class="ghost" id="shuffle">Shuffle</button>
+      </div>
+      <section id="stage"></section>
+      <footer class="foot">
+        <p>Known cards are left out of later shuffles. Needs-work cards stay in.</p>
+        <button type="button" class="linkish" id="clear">Clear tags</button>
+      </footer>
+    </main>
+    <script>
+      const CARDS = [{"id":"resp-job","topic":"Energy","prompt":"What does cellular respiration do with the energy stored in glucose?","answer":"Converts it into ATP the cell can use","accept":["makes atp from glucose","converts glucose energy into atp","extracts energy from glucose to make atp","turns chemical energy of glucose into atp"],"choices":["Converts it into ATP the cell can use","Stores it as heat so the cell stays warm","Turns oxygen directly into sugar","Builds glucose from carbon dioxide"],"why":"Respiration is a series of pathways that extract the chemical energy in glucose and convert it into ATP."},{"id":"redox-ox","topic":"Energy","prompt":"In a redox reaction, oxidation means what?","answer":"Loss of an electron","accept":["losing an electron","electrons are lost","leo","removal of an electron"],"choices":["Loss of an electron","Gain of an electron","Addition of a phosphate","Splitting of water"],"why":"LEO the lion says GER: lose electrons, oxidized; gain electrons, reduced.","strict":true},{"id":"redox-red","topic":"Energy","prompt":"In a redox reaction, reduction means what?","answer":"Gain of an electron","accept":["gaining an electron","electrons are gained","ger","addition of an electron"],"choices":["Gain of an electron","Loss of an electron","Release of a phosphate","Loss of a proton only"],"why":"The reduced form holds more potential energy. NAD+ becomes NADH when it is reduced.","strict":true},{"id":"redox-pe","topic":"Energy","prompt":"What happens to potential energy when a molecule is oxidized?","answer":"Potential energy decreases","accept":["it decreases","decreases","potential energy goes down","energy decreases"],"choices":["Potential energy decreases","Potential energy increases","Potential energy stays the same","The molecule is destroyed"],"why":"Reduction raises potential energy. Cells move electrons in small packages so the drop is usable, not destructive.","strict":true},{"id":"small-steps","topic":"Energy","prompt":"Why are electrons removed from food in small steps instead of one burst?","answer":"One burst would release too much energy and damage the cell","accept":["too much energy would be destructive","a single burst would damage the cell","small packages avoid a destructive burst"],"choices":["One burst would release too much energy and damage the cell","Oxygen can only accept one electron per hour","Enzymes cannot bind a whole glucose at once","The nucleus cannot store a large charge"],"why":"Most of the energy cells use sits in high-energy electrons. Tracking respiration means tracking those electrons."},{"id":"nad-form","topic":"Energy","prompt":"NAD comes from which vitamin, and which form of NAD is reduced?","answer":"Vitamin B3 (niacin); NADH is reduced","accept":["b3 nadh","niacin nadh","vitamin b3 and nadh","niacin reduced form is nadh"],"choices":["Vitamin B3 (niacin); NADH is reduced","Vitamin B2; NAD+ is reduced","Vitamin C; NADPH is reduced","Vitamin B12; FAD is reduced"],"why":"NAD+ is the oxidized carrier. NADH is the reduced carrier that shuttles high-energy electrons."},{"id":"oxidizing-agent","topic":"Energy","prompt":"When RH reduces NAD+ to NADH, which molecule is the oxidizing agent?","answer":"NAD+","accept":["nad+","nad plus","oxidized nad","nad"],"choices":["NAD+","NADH","RH","ATP"],"why":"The oxidizing agent is reduced. NAD+ gains electrons. RH is the reducing agent and is oxidized to R.","strict":true},{"id":"fad","topic":"Energy","prompt":"FAD is made from which vitamin, and what is its reduced form?","answer":"Vitamin B2 (riboflavin); FADH2","accept":["b2 fadh2","riboflavin fadh2","vitamin b2 and fadh2"],"choices":["Vitamin B2 (riboflavin); FADH2","Vitamin B3 (niacin); NADH","Vitamin B1; FAD+","Vitamin B6; NADPH"],"why":"NAD+ and FAD are the carriers used to pull energy out of sugars. FADH2 feeds the chain later than NADH."},{"id":"nadp","topic":"Energy","prompt":"How is NADP different from NAD, and where does the lecture put it to work?","answer":"It has an extra phosphate and is used in anabolic reactions and photosynthesis","accept":["extra phosphate photosynthesis","extra phosphate and anabolic reactions","used in photosynthesis not sugar breakdown"],"choices":["It has an extra phosphate and is used in anabolic reactions and photosynthesis","It has one less phosphate and replaces ATP","It is the final electron acceptor of the chain","It carries oxygen into mitochondria"],"why":"Anabolic means synthesis. NAD+ and FAD extract energy from sugars; NADP does not do that job."},{"id":"free-energy","topic":"Energy","prompt":"Why can't a cell store leftover energy as free energy?","answer":"It becomes heat and uncontrolled motion that can kill the cell","accept":["excess heat and thermal motion","it would damage or kill the cell","free energy becomes destructive heat"],"choices":["It becomes heat and uncontrolled motion that can kill the cell","Free energy leaks out through the cell wall as light","Membranes cannot touch a charged molecule","Free energy turns into DNA"],"why":"ATP works like a rechargeable battery: energy goes in when it is made and comes out when a phosphate is released."},{"id":"dephos","topic":"Energy","prompt":"What is dephosphorylation of ATP?","answer":"Energy is released when one or two phosphates leave ATP","accept":["release of a phosphate from atp","removing phosphate groups from atp releases energy","hydrolysis of atp to adp"],"choices":["Energy is released when one or two phosphates leave ATP","A phosphate is added to ADP with no energy change","ATP loses adenine and becomes a sugar","The cell burns ATP without making ADP"],"why":"The phosphates repel one another, so ATP is unstable and ready to give one up. That transfer is usually onto another molecule."},{"id":"two-atp-routes","topic":"Energy","prompt":"About what share of ATP from glucose comes from chemiosmosis?","answer":"About 90%","accept":["90","90 percent","about 90","ninety percent","90%"],"choices":["About 90%","About 10%","About 50%","100%"],"why":"Substrate-level phosphorylation, moving a phosphate from an intermediate onto ADP, makes only about 10%.","strict":true},{"id":"slp","topic":"Energy","prompt":"What is substrate-level phosphorylation?","answer":"ATP is made by moving a phosphate from a pathway intermediate onto ADP","accept":["phosphate transferred from an intermediate to adp","a phosphate is removed from an intermediate to make atp","direct transfer of a phosphate to adp"],"choices":["ATP is made by moving a phosphate from a pathway intermediate onto ADP","Protons spin ATP synthase in the membrane","Oxygen is added to ADP","Glucose is phosphorylated by light"],"why":"It is the small, direct route. Chemiosmosis, in the mitochondrion of eukaryotes, makes the large share."},{"id":"oxphos-def","topic":"Energy","prompt":"What is oxidative phosphorylation?","answer":"ATP production that happens in the presence of oxygen","accept":["making atp using oxygen","atp made when oxygen is present","phosphorylation that requires oxygen"],"choices":["ATP production that happens in the presence of oxygen","Splitting glucose in the cytoplasm without oxygen","Building glucose from CO2","Adding a phosphate using only light"],"why":"Chemiosmosis also runs in photosynthesis, but oxidative phosphorylation is the oxygen-dependent ATP production of respiration."},{"id":"gly-where","topic":"Glycolysis","prompt":"Where does glycolysis occur, and does it use oxygen directly?","answer":"In the cytoplasm, and it does not use oxygen","accept":["cytoplasm no oxygen","cytosol and it is anaerobic","cytoplasm of prokaryotes and eukaryotes without oxygen","cytoplasm does not require oxygen"],"choices":["In the cytoplasm, and it does not use oxygen","In the mitochondrial matrix, and it requires oxygen","On the inner membrane, and it requires oxygen","In the nucleus, and it uses carbon dioxide"],"why":"Nearly every organism runs glycolysis. The lecture treats it as anaerobic: oxygen is not a reactant."},{"id":"glucose-entry","topic":"Glycolysis","prompt":"What two routes let glucose into a cell in this lecture?","answer":"Secondary active transport, and GLUT facilitated diffusion","accept":["secondary active transport and glut","glut proteins and active transport","facilitated diffusion through glut and secondary active transport"],"choices":["Secondary active transport, and GLUT facilitated diffusion","Simple diffusion through the lipid bilayer only","Endocytosis of starch granules","A nuclear pore and a vacuole pump"],"why":"GLUT proteins are glucose transporters. Secondary active transport moves glucose against its gradient."},{"id":"gly-invest","topic":"Glycolysis","prompt":"What does the energy-investment phase of glycolysis do, and what does it cost?","answer":"It traps glucose and splits it into two pyruvates, at a cost of 2 ATP","accept":["splits glucose into two pyruvates costs 2 atp","traps and splits glucose using 2 atp","two pyruvate and invests 2 atp"],"choices":["It traps glucose and splits it into two pyruvates, at a cost of 2 ATP","It makes 4 ATP and releases CO2","It reduces oxygen to water using 2 ATP","It joins two pyruvates into glucose and gains 2 ATP"],"why":"The first phase keeps glucose in the cell and rearranges the six-carbon sugar before the split into two three-carbon pyruvates."},{"id":"gly-net","topic":"Glycolysis","prompt":"What is the net yield of glycolysis from one glucose?","answer":"2 pyruvate, 2 NADH, and a net of 2 ATP","accept":["2 atp and 2 nadh","net 2 atp and 2 nadh","two atp two nadh two pyruvate","2 pyruvate 2 nadh net 2 atp"],"choices":["2 pyruvate, 2 NADH, and a net of 2 ATP","2 pyruvate, 2 NADH, and a net of 4 ATP","1 pyruvate, 1 FADH2, and 36 ATP","2 acetyl CoA and 2 CO2 only"],"why":"The payoff phase makes 4 ATP. Two replace the two that were spent, so the net is 2 ATP plus 2 NADH.","strict":true},{"id":"rbc","topic":"Glycolysis","prompt":"Why is glycolysis the only ATP source in a mature mammalian red blood cell?","answer":"It has no mitochondria, so it cannot respire aerobically","accept":["no mitochondria","red blood cells lack mitochondria","they cannot do aerobic respiration"],"choices":["It has no mitochondria, so it cannot respire aerobically","It has no cytoplasm, so the Krebs cycle is the only option","Hemoglobin blocks every enzyme except ATP synthase","Oxygen cannot cross the red cell membrane"],"why":"If glycolysis stops, the sodium-potassium pumps fail and the cell dies."},{"id":"whole-aerobic","topic":"Glycolysis","prompt":"In this lecture, about how many ATP does the full aerobic breakdown of one glucose yield?","answer":"About 32 to 36, and about 34 in humans","accept":["32 to 36","32 36","about 34","34","32-36","34 atp","humans make 34"],"choices":["About 32 to 36, and about 34 in humans","Exactly 2","Exactly 4","About 100"],"why":"The count varies by species, by how many protons the chain pumps, and by the shuttle. FAD shuttles (the lecture points to brain) make less ATP than NAD shuttles (liver). About 34% of the energy in glucose is captured; the rest leaves as heat.","strict":true},{"id":"pyruvate-product","topic":"Pyruvate & cycle","prompt":"In the mitochondria, pyruvate is prepared for the citric acid cycle by becoming what?","answer":"Acetyl CoA","accept":["acetyl coa","acetyl coenzyme a","acetyl-coa"],"choices":["Acetyl CoA","Lactate","Glucose","Oxaloacetate"],"why":"The conversion runs twice per glucose, once for each pyruvate. NAD+ is reduced to NADH, and the carbon that is removed leaves as CO2.","strict":true},{"id":"cac-names","topic":"Pyruvate & cycle","prompt":"What are two other names for the citric acid cycle, and who described it?","answer":"The TCA cycle and the Krebs cycle, described by Hans Krebs","accept":["tca and krebs","krebs cycle and tca cycle","hans krebs tca","krebs cycle hans krebs"],"choices":["The TCA cycle and the Krebs cycle, described by Hans Krebs","The Calvin cycle and the Hill cycle, described by Melvin Calvin","Glycolysis and fermentation, described by Louis Pasteur","The urea cycle and beta oxidation, described by Hans Krebs"],"why":"The lecture dates the discovery to 1930. It is a closed loop in the mitochondrion: the last step regenerates the compound the first step needs."},{"id":"cac-turn","topic":"Pyruvate & cycle","prompt":"What does one turn of the citric acid cycle produce?","answer":"2 CO2, 1 ATP (or GTP), 3 NADH, and 1 FADH2","accept":["2 co2 1 atp 3 nadh 1 fadh2","2 co2 1 gtp 3 nadh 1 fadh2","two co2 one atp three nadh one fadh2"],"choices":["2 CO2, 1 ATP (or GTP), 3 NADH, and 1 FADH2","1 CO2, 4 ATP, 1 NADH, and 3 FADH2","6 CO2, 2 ATP, and no electron carriers","2 pyruvate and 2 NADH only"],"why":"GTP is an ATP equivalent with a more limited use. Two acetyl groups enter per glucose, so the cycle turns twice.","strict":true},{"id":"cac-carbons","topic":"Pyruvate & cycle","prompt":"By the end of pyruvate oxidation plus the citric acid cycle, what has happened to the six carbons of glucose?","answer":"All six have left as CO2","accept":["released as co2","all six carbons are released as carbon dioxide","they become six co2","all leave as carbon dioxide"],"choices":["All six have left as CO2","They are rebuilt into glucose","They remain inside citrate","They are stored as glycogen"],"why":"Two carbons leave when the two pyruvates become acetyl CoA. Four leave across two turns of the cycle (2 CO2 per turn)."},{"id":"cac-oxygen","topic":"Pyruvate & cycle","prompt":"Does the citric acid cycle itself consume oxygen?","answer":"No. It is aerobic only because its NADH and FADH2 feed a pathway that uses oxygen","accept":["no","does not consume oxygen","no it does not directly use oxygen","it does not use oxygen directly"],"choices":["No. It is aerobic only because its NADH and FADH2 feed a pathway that uses oxygen","Yes. Each turn binds one O2 inside citrate","Yes. Oxygen is a substrate of succinate dehydrogenase","No. The cycle stops whenever any oxygen is present"],"why":"The cycle makes very little ATP directly. The carriers it loads are what the electron transport chain cashes in."},{"id":"cac-feedback","topic":"Pyruvate & cycle","prompt":"How do ATP, NADH, and ADP regulate the citric acid cycle in this lecture?","answer":"ATP slows the first step. ATP and NADH slow the third step, and ADP speeds it up","accept":["atp slows step 1 atp and nadh slow step 3 adp speeds step 3","negative feedback by atp and nadh positive by adp","high atp slows the cycle adp speeds it up"],"choices":["ATP slows the first step. ATP and NADH slow the third step, and ADP speeds it up","ATP speeds every step and ADP stops the cycle","NADH is the only activator and CO2 is the only inhibitor","The cycle is not regulated"],"why":"Step 1 is negative feedback from ATP. Step 3 has negative feedback from ATP and NADH and positive feedback from ADP."},{"id":"feedback-def","topic":"Pyruvate & cycle","prompt":"What is the difference between positive and negative feedback?","answer":"Positive feedback amplifies a process; negative feedback dampens it","accept":["positive amplifies negative dampens","positive makes more happen negative slows it","end products speed a positive loop and inhibit a negative loop"],"choices":["Positive feedback amplifies a process; negative feedback dampens it","Positive feedback always involves ATP; negative feedback always involves heat","They are two names for the same control","Positive feedback stops the stimulus; negative feedback removes the enzyme"],"why":"Lecture examples of positive feedback are clotting and childbirth (oxytocin). Negative examples are a toilet float and prairie grasses that inhibit their own crowding."},{"id":"amphibolic","topic":"Pyruvate & cycle","prompt":"Why is the citric acid cycle called amphibolic?","answer":"It is both catabolic and anabolic","accept":["both breakdown and synthesis","catabolic and anabolic","it breaks down acetyl groups and builds amino acids"],"choices":["It is both catabolic and anabolic","It runs only in amphibians","It uses both acid and base at the same step","It occurs in both the nucleus and the cytosol"],"why":"It breaks acetyl groups down and also supplies skeletons for many nonessential amino acids.","strict":true},{"id":"oxphos-parts","topic":"Oxidative phosphorylation","prompt":"What are the two parts of oxidative phosphorylation, and where do protons collect?","answer":"The electron transport chain and chemiosmosis; protons collect in the intermembrane space","accept":["electron transport chain and chemiosmosis intermembrane space","etc and chemiosmosis in the intermembrane space","chain and atp synthase protons in the intermembrane space"],"choices":["The electron transport chain and chemiosmosis; protons collect in the intermembrane space","Glycolysis and the Krebs cycle; protons collect in the cytosol","Fermentation and the Calvin cycle; protons collect in the stroma","Transcription and translation; protons collect in the nucleus"],"why":"Protons flow back into the matrix through ATP synthase. That flow powers the addition of phosphate to ADP. This is most of the ATP from glucose."},{"id":"etc-only-o2","topic":"Oxidative phosphorylation","prompt":"Which part of glucose metabolism directly uses oxygen, and where are the complexes in eukaryotes?","answer":"The electron transport chain, in the inner mitochondrial membrane","accept":["electron transport chain inner mitochondrial membrane","etc on the inner membrane","only the electron transport chain uses oxygen"],"choices":["The electron transport chain, in the inner mitochondrial membrane","Glycolysis, in the cytoplasm","The citric acid cycle, in the matrix, where O2 enters citrate","Pyruvate oxidation, in the outer membrane"],"why":"Animals move oxygen in with a respiratory system. Plants, fungi, and bacteria rely on diffusion; plants use stomata. Prokaryotes, which lack mitochondria, put the chain in the plasma membrane."},{"id":"complex-1","topic":"Oxidative phosphorylation","prompt":"What does Complex I do with the electrons from NADH?","answer":"It passes them on and pumps four H+ into the intermembrane space","accept":["pumps 4 protons","pumps four hydrogen ions","pumps 4 h+ across the membrane","four protons pumped from nadh"],"choices":["It passes them on and pumps four H+ into the intermembrane space","It forms water and pumps no protons","It accepts FADH2 and pumps two H+ into the matrix","It converts NADH back to glucose"],"why":"The inner membrane separates the matrix from the intermembrane space. Pumping protons there builds the gradient.","strict":true},{"id":"complex-2","topic":"Oxidative phosphorylation","prompt":"Why does FADH2 yield less ATP than NADH?","answer":"It donates electrons at Complex II and skips Complex I, so fewer protons are pumped","accept":["skips complex 1","enters at complex ii fewer protons","fadh2 bypasses complex i","fewer protons pumped because it skips complex 1"],"choices":["It donates electrons at Complex II and skips Complex I, so fewer protons are pumped","FADH2 cannot donate electrons at all","Complex II pumps twice as many protons, but they leak","FADH2 is spent entirely in glycolysis"],"why":"ATP made is proportional to the number of protons pumped across the inner membrane."},{"id":"complex-4","topic":"Oxidative phosphorylation","prompt":"What does Complex IV do with oxygen?","answer":"It reduces O2, which picks up protons and becomes water","accept":["makes water","reduces oxygen to water","oxygen is the final acceptor and forms h2o","forms water from oxygen and protons"],"choices":["It reduces O2, which picks up protons and becomes water","It releases O2 as a waste gas","It attaches O2 to glucose","It pumps oxygen into the matrix as O2− gas"],"why":"Complex III pumps protons and hands electrons to Complex IV. Removing protons at Complex IV also supports the gradient. Oxygen is the final electron acceptor."},{"id":"synthase","topic":"Oxidative phosphorylation","prompt":"How does ATP synthase use the proton gradient?","answer":"H+ flows through it into the matrix, and the turning enzyme adds phosphate to ADP","accept":["protons spin atp synthase to make atp","h+ flows down the gradient through atp synthase","chemiosmosis turns atp synthase","proton flow phosphorylates adp"],"choices":["H+ flows through it into the matrix, and the turning enzyme adds phosphate to ADP","It pumps protons out and splits ATP","It diffuses H+ through the lipid bilayer with no protein","It binds oxygen and releases phosphate as heat"],"why":"The gradient is both chemical and electrical. H+ cannot cross the nonpolar membrane on its own, so it goes through this integral protein, which the lecture compares to a tiny generator."},{"id":"chemiosmosis-count","topic":"Oxidative phosphorylation","prompt":"About how many of the ATP from aerobic glucose breakdown come from chemiosmosis in this lecture?","answer":"About 28 to 32, roughly 90%","accept":["28 to 32","28 32","about 28-32","90 percent","28 to 32 atp"],"choices":["About 28 to 32, roughly 90%","Exactly 2, roughly 10%","Exactly 4 from glycolysis only","None; chemiosmosis makes heat, not ATP"],"why":"The electron transport chain returns NAD+ and FAD, makes water, and supplies the protons. Chemiosmosis is what turns that gradient into the large ATP harvest.","strict":true},{"id":"final-acceptor","topic":"Oxidative phosphorylation","prompt":"What is the final electron acceptor of the aerobic electron transport chain?","answer":"Oxygen","accept":["o2","molecular oxygen","oxygen gas"],"choices":["Oxygen","NAD+","Carbon dioxide","ATP synthase"],"why":"Electrons that began in glucose end on oxygen. The charged oxygen pulls in protons and water forms.","strict":true},{"id":"regen-nad","topic":"Without oxygen","prompt":"If oxygen is absent, why must the cell reoxidize NADH?","answer":"Glycolysis needs NAD+, and excess NADH can spawn free radicals","accept":["to regenerate nad+ for glycolysis","nad+ must be available to keep glycolysis going","to avoid free radicals and supply nad+"],"choices":["Glycolysis needs NAD+, and excess NADH can spawn free radicals","NADH must be stored so the nucleus can copy DNA","NADH is the final electron acceptor and has to be burned","The cell converts NADH into glucose"],"why":"A free radical is an unstable molecule that can damage lipids, proteins, and DNA. Fermentation's real payoff is getting NAD+ back, not a large ATP yield."},{"id":"ferm-vs-an","topic":"Without oxygen","prompt":"In this lecture, how is fermentation different from anaerobic respiration?","answer":"Fermentation uses only glycolysis and an organic acceptor. Anaerobic respiration still runs the cycle and the chain with an inorganic acceptor other than O2","accept":["fermentation uses only glycolysis","fermentation is glycolysis only with an organic acceptor","anaerobic respiration uses an inorganic acceptor","only glycolysis versus glycolysis cycle and chain"],"choices":["Fermentation uses only glycolysis and an organic acceptor. Anaerobic respiration still runs the cycle and the chain with an inorganic acceptor other than O2","They are the same pathway with the same acceptor","Fermentation uses the electron transport chain; anaerobic respiration is glycolysis only","Fermentation requires oxygen; anaerobic respiration requires light"],"why":"Inorganic acceptors named here include sulfur, nitrate, carbon dioxide, and iron. The lecture assigns both routes only 2 ATP per glucose, against about 34 to 38 for aerobic respiration."},{"id":"ecoli","topic":"Without oxygen","prompt":"How can E. coli in the gut run a respiratory chain without oxygen?","answer":"Nitrate reductase lets nitrate (NO3−) be the final electron acceptor","accept":["nitrate reductase","nitrate is the final electron acceptor","no3 minus","uses nitrate"],"choices":["Nitrate reductase lets nitrate (NO3−) be the final electron acceptor","It uses ATP synthase as the acceptor","It stops after glycolysis and makes ethanol","It exports electrons directly into the blood as oxygen"],"why":"Oxidative phosphorylation still happens; the acceptor and the ATP count differ. Some archaea (methanogens) use CO2 and release methane."},{"id":"alcohol","topic":"Without oxygen","prompt":"In alcohol fermentation, what is pyruvate turned into?","answer":"CO2 and acetaldehyde, then ethanol as NADH is oxidized back to NAD+","accept":["acetaldehyde then ethanol","ethanol and carbon dioxide","co2 and ethanol","acetaldehyde and ethanol regenerating nad+"],"choices":["CO2 and acetaldehyde, then ethanol as NADH is oxidized back to NAD+","Lactic acid, then glucose","Acetyl CoA, then citrate","Oxygen and water"],"why":"Yeast does this under anaerobic conditions, which is why wine and beer contain ethanol. The 2 ATP still come only from glycolysis. The electrons taken off sugar are donated back onto acetaldehyde."},{"id":"lactic","topic":"Without oxygen","prompt":"What happens in lactic acid fermentation during hard exercise?","answer":"NADH reduces pyruvate to lactic acid and regenerates NAD+","accept":["pyruvate becomes lactic acid","pyruvate to lactate regenerates nad+","lactic acid and nad+"],"choices":["NADH reduces pyruvate to lactic acid and regenerates NAD+","Pyruvate becomes ethanol inside the muscle","The muscle runs the citric acid cycle without NAD+","Lactic acid is the final acceptor of the electron transport chain"],"why":"That is the burn and the cramp. Muscle cells secrete lactic acid, and the liver converts it back to pyruvate. The route yields 2 ATP per glucose and keeps NADH from building up."},{"id":"fuels-sugar","topic":"Connections","prompt":"How do glycogen and sucrose enter glycolysis?","answer":"Glycogen is broken into glucose. Sucrose is split into glucose and fructose","accept":["glycogen to glucose sucrose to glucose and fructose","glycogen becomes glucose and sucrose becomes glucose and fructose"],"choices":["Glycogen is broken into glucose. Sucrose is split into glucose and fructose","Both enter the chain directly as FADH2","Both must be turned into cholesterol first","They skip glycolysis and enter as oxygen"],"why":"Lactose yields glucose and galactose. Fructose and galactose make as many ATP as glucose. All of these sugars are isomers of C6H12O6 or are built from them."},{"id":"amino-acids","topic":"Connections","prompt":"Before an amino acid can enter glucose breakdown, what must be removed, and what does the liver do with it?","answer":"The amino group, which becomes ammonia and is built into urea","accept":["amino group removed becomes ammonia then urea","remove the amino group urea","deamination and urea"],"choices":["The amino group, which becomes ammonia and is built into urea","The carboxyl group, which becomes ATP directly","The side chain, which is stored as NADH","Nothing; whole proteins enter the Krebs cycle"],"why":"Amino acids are usually recycled into new proteins. They are sent into catabolism when they are in excess or the body is starving. The liver makes urea from two ammonia molecules and one CO2. Respiration intermediates can also be used to make amino acids."},{"id":"lipids","topic":"Connections","prompt":"How are triglycerides connected to these pathways?","answer":"They are the long-term energy store and can be both made and broken down via the glucose pathways","accept":["long term energy storage","made and broken down during glucose pathways","triglycerides store energy and feed into respiration"],"choices":["They are the long-term energy store and can be both made and broken down via the glucose pathways","They replace ATP synthase in the membrane","They are the final electron acceptor in muscle","They cannot be made or broken down by animals"],"why":"Cholesterol, another lipid on this slide, keeps membranes flexible and is a precursor of steroid hormones."},{"id":"why-regulate","topic":"Regulation","prompt":"Why is cellular respiration regulated instead of always running at maximum?","answer":"The cell needs a balanced ATP supply and must spare intermediates for other molecules","accept":["balance atp and make other molecules","not maximum atp all the time","intermediates are needed for amino acids glycogen lipids and nucleic acids","balanced amount of atp"],"choices":["The cell needs a balanced ATP supply and must spare intermediates for other molecules","Maximum speed would run out of oxygen in the room","Enzymes work only once and must be conserved","Regulation is only needed in prokaryotes"],"why":"Those intermediates are pulled toward amino acids, proteins, glycogen, lipids, and nucleic acids."},{"id":"gly-control","topic":"Regulation","prompt":"Which steps of glycolysis are the main control points in this lecture?","answer":"Steps 1, 3, and 10","accept":["1 3 and 10","1 3 10","steps 1 3 and 10","the 1st 3rd and 10th"],"choices":["Steps 1, 3, and 10","Steps 2, 4, and 6","Only the last step","Every step equally"],"why":"The first two controlled steps are early and both hydrolyze ATP. Committing there means the later steps follow. The lecture also lists GLUT proteins, a separate enzyme for the reverse direction so the reaction does not sit at equilibrium, and allosteric effectors that reshape the active site.","strict":true},{"id":"mito-disease","topic":"Regulation","prompt":"Type 2 diabetes, in this lecture's career note, impairs which part of respiration?","answer":"Oxidation of NADH during oxidative phosphorylation, not the other stages","accept":["oxidative phosphorylation","nadh oxidation in the electron transport chain","efficiency of nadh oxidation","oxphos not glycolysis"],"choices":["Oxidation of NADH during oxidative phosphorylation, not the other stages","Only glycolysis in red blood cells","The conversion of light into glucose","DNA replication in the nucleus only"],"why":"Mitochondrial diseases can come from nuclear or mitochondrial DNA and leave cells short of ATP. Signs include muscle weakness, poor coordination, stroke-like episodes, and loss of vision or hearing. Many patients are children, but not all."},{"id":"carnivores","topic":"Connections","prompt":"About how many carnivorous plant species does the lecture cite, and which one is named first?","answer":"More than 600, starting with the Venus flytrap","accept":["more than 600 venus flytrap","over 600 dionaea","600 venus flytrap","more than 600 and the venus flytrap"],"choices":["More than 600, starting with the Venus flytrap","About 12, starting with the cactus","Exactly 4, all of them sundews","None; the slide says plants never consume animals"],"why":"Also named: American pitcher plants (Sarracenia), sun pitchers (Heliamphora), tropical pitcher plants (Nepenthes), and sundews (Drosera)."}];
+      const KEY = "respire-cards-v1";
+      const TOPICS = [...new Set(CARDS.map((card) => card.topic))];
+
+      const state = {
+        status: {},
+        topic: "All",
+        view: "remaining",
+        mode: "choice",
+        review: false,
+        queue: [],
+        pos: 0,
+        options: [],
+        result: null,
+        session: { correct: 0, attempts: 0 },
+        confirm: false,
+      };
+
+      function norm(input) {
+        let text = input.toLowerCase();
+        text = text.replace(/coenzyme\s*a/g, "coa");
+        text = text.replace(/acetyl\s*[- ]?\s*co\s*-?\s*a/g, "acetyl coa");
+        text = text.replace(/fad\s*h\s*2/g, "fadh2");
+        text = text.replace(/nad\s*h/g, "nadh");
+        text = text.replace(/nad\s*\+/g, "nad+");
+        text = text.replace(/fad\s*\+/g, "fad+");
+        text = text.replace(/[^a-z0-9+]+/g, " ");
+        return text.replace(/\s+/g, " ").trim();
+      }
+      function hasPhrase(given, target) {
+        return (" " + given + " ").includes(" " + target + " ");
+      }
+      function gradeRecall(input, card) {
+        const given = norm(input);
+        if (!given) return false;
+        const targets = [card.answer, ...card.accept].map(norm).filter(Boolean);
+        if (targets.some((target) => target === given)) return true;
+        return targets.some((target) => target.length >= 8 && hasPhrase(given, target));
+      }
+      function shuffle(list) {
+        const copy = list.slice();
+        for (let i = copy.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const tmp = copy[i];
+          copy[i] = copy[j];
+          copy[j] = tmp;
+        }
+        return copy;
+      }
+      function load() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(KEY) || "{}");
+          const next = {};
+          Object.entries(parsed.status || {}).forEach(([id, value]) => {
+            if (value === "known" || value === "work") next[id] = value;
+          });
+          state.status = next;
+        } catch {
+          state.status = {};
+        }
+      }
+      function save() {
+        localStorage.setItem(KEY, JSON.stringify({ status: state.status }));
+      }
+      function pool() {
+        return CARDS.filter((card) => {
+          if (state.topic !== "All" && card.topic !== state.topic) return false;
+          if (state.review) return true;
+          if (state.status[card.id] === "known") return false;
+          if (state.view === "work" && state.status[card.id] !== "work") return false;
+          return true;
+        });
+      }
+      function deal(review) {
+        state.review = Boolean(review);
+        state.queue = shuffle(pool());
+        state.pos = 0;
+        state.result = null;
+        open();
+        render();
+      }
+      function current() {
+        return state.pos >= 0 && state.pos < state.queue.length ? state.queue[state.pos] : null;
+      }
+      function open() {
+        const card = current();
+        state.options = card ? shuffle(card.choices) : [];
+        state.result = null;
+      }
+      function counts() {
+        let known = 0;
+        let work = 0;
+        CARDS.forEach((card) => {
+          if (state.status[card.id] === "known") known += 1;
+          if (state.status[card.id] === "work") work += 1;
+        });
+        return { known, work, left: CARDS.length - known };
+      }
+      function grade(given, ok) {
+        state.result = { ok, given };
+        state.session.attempts += 1;
+        if (ok) state.session.correct += 1;
+        render();
+      }
+      function tag(kind) {
+        const card = current();
+        if (!card || !state.result) return;
+        if (state.status[card.id] === kind) delete state.status[card.id];
+        else state.status[card.id] = kind;
+        save();
+        render();
+      }
+      function next() {
+        state.pos += 1;
+        open();
+        render();
+      }
+
+      const stage = document.getElementById("stage");
+      const topics = document.getElementById("topics");
+      const topicSelect = document.getElementById("topic-select");
+      ["All", ...TOPICS].forEach((topic) => {
+        const option = document.createElement("option");
+        option.value = topic;
+        option.textContent = topic === "All" ? "All topics" : topic;
+        topicSelect.appendChild(option);
+      });
+      topicSelect.addEventListener("change", () => {
+        state.topic = topicSelect.value;
+        deal(false);
+      });
+
+      function render() {
+        const tally = counts();
+        document.getElementById("bar-known").style.width = (tally.known / CARDS.length) * 100 + "%";
+        document.getElementById("bar-known").style.background = "var(--pine)";
+        document.getElementById("bar-work").style.width = (tally.work / CARDS.length) * 100 + "%";
+        document.getElementById("bar-work").style.background = "var(--clay)";
+        const score =
+          state.session.attempts > 0
+            ? state.session.correct + "/" + state.session.attempts + " correct this sitting"
+            : CARDS.length + " cards";
+        document.getElementById("stats").textContent =
+          tally.left + " still in play · " + tally.known + " known · " + tally.work + " need work · " + score;
+
+        topics.innerHTML = "";
+        ["All", ...TOPICS].forEach((topic) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "chip";
+          button.textContent = topic === "All" ? "All topics" : topic;
+          button.setAttribute("aria-pressed", String(state.topic === topic));
+          button.addEventListener("click", () => {
+            state.topic = topic;
+            deal(false);
+          });
+          topics.appendChild(button);
+        });
+        topicSelect.value = state.topic;
+        document.getElementById("view-remaining").setAttribute("aria-pressed", String(state.view === "remaining"));
+        document.getElementById("view-work").setAttribute("aria-pressed", String(state.view === "work"));
+        document.getElementById("mode-choice").setAttribute("aria-pressed", String(state.mode === "choice"));
+        document.getElementById("mode-recall").setAttribute("aria-pressed", String(state.mode === "recall"));
+
+        const card = current();
+        if (!card) {
+          const emptyWork = state.view === "work" && tally.work === 0;
+          const title =
+            tally.known === CARDS.length
+              ? "Every card is marked known."
+              : emptyWork
+                ? "Nothing is tagged needs work."
+                : state.queue.length === 0 && state.topic !== "All"
+                  ? "Nothing left in " + state.topic + "."
+                  : "This shuffle is finished.";
+          const detail =
+            tally.known === CARDS.length
+              ? "A normal shuffle stays empty until you clear a tag or review known cards."
+              : tally.left + " still not marked known. Shuffle again and the known ones stay out.";
+          stage.innerHTML =
+            '<section class="done"><p class="kicker">End of this pass</p><h2>' +
+            title +
+            "</h2><p class=\"lede\">" +
+            detail +
+            '</p><div class="row" style="margin-top:1rem"><button type="button" class="solid" id="again">Shuffle remaining</button>' +
+            (tally.known ? '<button type="button" class="ghost" id="review">Review known</button>' : "") +
+            "</div></section>";
+          document.getElementById("again").addEventListener("click", () => deal(false));
+          const review = document.getElementById("review");
+          if (review) review.addEventListener("click", () => deal(true));
+          return;
+        }
+
+        const tagLine = state.status[card.id] === "known"
+          ? "Tagged known. A normal shuffle will skip it."
+          : state.status[card.id] === "work"
+            ? "Tagged needs work. It stays in the deck."
+            : "";
+        const wrap = document.createElement("article");
+        wrap.className = "card";
+        wrap.innerHTML =
+          '<span class="spine" aria-hidden="true"></span><div class="pad"><p class="topic"><span>' +
+          card.topic +
+          (state.review ? " · reviewing known" : "") +
+          "</span><span>" +
+          (state.pos + 1) +
+          " / " +
+          state.queue.length +
+          '</span></p><h2></h2><p class="hint" id="tagline"></p><div id="answer"></div><div id="live" aria-live="polite"></div><div class="actions" id="nav"></div></div>';
+        wrap.querySelector("h2").textContent = card.prompt;
+        wrap.querySelector("#tagline").textContent = tagLine;
+        const answer = wrap.querySelector("#answer");
+        if (state.mode === "choice") {
+          const list = document.createElement("div");
+          list.className = "choices";
+          list.setAttribute("role", "group");
+          list.setAttribute("aria-label", "Answer choices");
+          state.options.forEach((choice, index) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "choice";
+            if (state.result) {
+              button.disabled = true;
+              if (choice === card.answer) button.classList.add("right");
+              else if (choice === state.result.given) button.classList.add("wrong");
+              else button.classList.add("dim");
+            }
+            const num = document.createElement("b");
+            num.textContent = String(index + 1);
+            const text = document.createElement("span");
+            text.textContent = choice;
+            button.append(num, text);
+            button.addEventListener("click", () => grade(choice, choice === card.answer));
+            list.appendChild(button);
+          });
+          answer.appendChild(list);
+        } else {
+          const label = document.createElement("label");
+          label.htmlFor = "recall";
+          label.textContent = "Type the answer";
+          const input = document.createElement("input");
+          input.id = "recall";
+          input.autocomplete = "off";
+          input.placeholder = "A short phrase is enough";
+          if (state.result) input.disabled = true;
+          const check = document.createElement("button");
+          check.type = "button";
+          check.className = "solid";
+          check.style.marginTop = "0.7rem";
+          check.textContent = "Check answer";
+          const warn = document.createElement("p");
+          warn.className = "warn";
+          label.appendChild(input);
+          answer.append(label, warn);
+          if (!state.result) answer.appendChild(check);
+          check.addEventListener("click", () => {
+            if (!input.value.trim()) {
+              warn.textContent = "Type an answer to check it.";
+              return;
+            }
+            grade(input.value.trim(), gradeRecall(input.value, card));
+          });
+          input.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              check.click();
+            }
+          });
+        }
+        const live = wrap.querySelector("#live");
+        if (state.result) {
+          const banner = document.createElement("div");
+          banner.className = "banner " + (state.result.ok ? "ok" : "no");
+          banner.innerHTML =
+            "<strong>" +
+            (state.result.ok ? "Correct" : "Incorrect") +
+            "</strong><p></p><p></p>";
+          banner.querySelectorAll("p")[0].textContent = state.result.ok ? card.answer : "Answer: " + card.answer;
+          banner.querySelectorAll("p")[1].textContent = card.why;
+          live.appendChild(banner);
+          const tags = document.createElement("div");
+          tags.className = "tags";
+          [["known", "I know this", "on-pine"], ["work", "Needs work", "on-clay"]].forEach(([kind, labelText, onClass]) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "tag" + (state.status[card.id] === kind ? " " + onClass : "");
+            button.textContent = labelText;
+            button.setAttribute("aria-pressed", String(state.status[card.id] === kind));
+            button.addEventListener("click", () => tag(kind));
+            tags.appendChild(button);
+          });
+          live.appendChild(tags);
+        } else {
+          const hint = document.createElement("p");
+          hint.className = "hint";
+          hint.textContent = state.mode === "choice" ? "Pick a choice." : "Check your phrase against the lecture wording.";
+          live.appendChild(hint);
+        }
+        const nav = wrap.querySelector("#nav");
+        const skip = document.createElement("button");
+        skip.type = "button";
+        skip.className = state.result ? "solid ink" : "ghost";
+        skip.textContent = state.result ? "Next card" : "Skip";
+        skip.addEventListener("click", next);
+        nav.appendChild(skip);
+        stage.replaceChildren(wrap);
+      }
+
+      document.getElementById("shuffle").addEventListener("click", () => deal(false));
+      document.getElementById("view-remaining").addEventListener("click", () => {
+        state.view = "remaining";
+        deal(false);
+      });
+      document.getElementById("view-work").addEventListener("click", () => {
+        state.view = "work";
+        deal(false);
+      });
+      document.getElementById("mode-choice").addEventListener("click", () => {
+        state.mode = "choice";
+        open();
+        render();
+      });
+      document.getElementById("mode-recall").addEventListener("click", () => {
+        state.mode = "recall";
+        open();
+        render();
+      });
+      document.getElementById("clear").addEventListener("click", () => {
+        if (!state.confirm) {
+          state.confirm = true;
+          document.getElementById("clear").textContent = "Confirm clear";
+          return;
+        }
+        state.status = {};
+        state.confirm = false;
+        document.getElementById("clear").textContent = "Clear tags";
+        save();
+        deal(false);
+      });
+
+      load();
+      deal(false);
+    </script>
+  </body>
+</html>

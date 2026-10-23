@@ -1,0 +1,36 @@
+{
+  "url": "http://127.0.0.1:8080/",
+  "viewports": {
+    "desktop": {
+      "width": 1280,
+      "height": 800,
+      "status": 200,
+      "title": "Respire Cards",
+      "hasCanvas": false,
+      "bodyTextLen": 689,
+      "bodyTextHash": "fb6dfc2f95d913bd9dcc277f191e5c72c722c26eb1ed60a19f85c1819c658623",
+      "bodyTextPrefix": "BIOL 1414 · LECTURE 9 · 7–8 OCT 2026 Respire Cards Cellular resp",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview.png"
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "status": 200,
+      "title": "Respire Cards",
+      "hasCanvas": false,
+      "bodyTextLen": 955,
+      "bodyTextHash": "ba081cf4c4bb846515c2ee01969689f465be7f14c5e5e6f9d8cd24fab0c15504",
+      "bodyTextPrefix": "BIOL 1414 · LECTURE 9 · 7–8 OCT 2026 Respire Cards Cellular resp",
+      "horizontalOverflow": false,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "screenshot": "/workspace/screenshots/app-builder-preview-mobile.png"
+    }
+  },
+  "brandWarnings": [],
+  "authWarnings": [],
+  "verdictFile": "/workspace/screenshots/app-builder-preview.json"
+}
